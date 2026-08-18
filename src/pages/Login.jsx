@@ -1,20 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, session } = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (session) navigate('/', { replace: true })
+  }, [session])
 
   const handleSubmit = async e => {
     e.preventDefault()
     setLoading(true)
     setError('')
     const { error } = await signIn(email, password)
-    if (error) setError('Email atau kata sandi salah.')
-    setLoading(false)
+    if (error) {
+      setError('Email atau kata sandi salah.')
+      setLoading(false)
+    }
+    // kalau sukses, useEffect di atas yang akan pindah halaman otomatis
   }
 
   return (
