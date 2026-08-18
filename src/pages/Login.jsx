@@ -21,11 +21,8 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-tint px-4">
       <div className="animate-fadeIn w-full max-w-sm rounded-xl2 border border-lavender-200 bg-white p-8 shadow-lg shadow-ink-900/5">
         <div className="mb-6 flex flex-col items-center">
-          <div className="relative mb-3 h-10 w-10 rounded-lg bg-ink-900">
-            <span className="star-motif absolute inset-2 bg-lavender-400" />
-          </div>
-          <p className="font-display text-lg font-semibold text-ink-900">IMPROVEHUB</p>
-          <p className="text-xs text-lavender-500">Finance & Tax Portal</p>
+          <img src="/logo.png" alt="IMPROVEHUB" className="h-16 w-auto" />
+          <p className="mt-2 text-xs text-lavender-500">Finance & Tax Portal</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
