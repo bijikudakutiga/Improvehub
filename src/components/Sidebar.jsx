@@ -127,6 +127,50 @@ function Section({ item, collapsed }) {
 export default function Sidebar({ collapsed, setCollapsed }) {
   return (
     <aside className={`flex h-screen flex-col border-r border-lavender-200 bg-white transition-all duration-300 ${collapsed ? 'w-[76px]' : 'w-[280px]'}`}>
+      <div className="flex items-center border-b border-lavender-100 px-4 py-5">
+        {collapsed ? (
+          <div className="h-8 w-8 shrink-0 overflow-hidden">
+            <img src="/logo.png" alt="IMPROVEHUB" className="h-8 w-auto max-w-none" style={{ objectFit: 'cover', objectPosition: 'left' }} />
+          </div>
+        ) : (
+          <img src="/logo.png" alt="IMPROVEHUB" className="h-8 w-auto" />
+        )}
+      </div>
+
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        {MENU.map(item => <Section key={item.label} item={item} collapsed={collapsed} />)}
+      </nav>
+
+      <button
+        onClick={() => setCollapsed(c => !c)}
+        className="border-t border-lavender-100 px-4 py-3 text-left text-xs text-lavender-500 hover:text-ink-900"
+      >
+        {collapsed ? '»' : '« Ciutkan menu'}
+      </button>
+    </aside>
+  )
+}          {item.children.map(c => (
+            <NavLink
+              key={c.to}
+              to={c.to}
+              className={({ isActive }) =>
+                `rounded-lg px-2.5 py-1.5 text-[13px] transition-colors ${
+                  isActive ? 'bg-lavender-100 text-ink-900 font-medium' : 'text-ink-400 hover:bg-lavender-50'
+                }`
+              }
+            >
+              {c.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function Sidebar({ collapsed, setCollapsed }) {
+  return (
+    <aside className={`flex h-screen flex-col border-r border-lavender-200 bg-white transition-all duration-300 ${collapsed ? 'w-[76px]' : 'w-[280px]'}`}>
       <div className="flex items-center gap-2 border-b border-lavender-100 px-4 py-5">
         <div className="relative h-8 w-8 shrink-0 rounded-lg bg-ink-900">
           <span className="star-motif absolute inset-1.5 bg-lavender-400" />
