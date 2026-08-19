@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow, ExportBar } from '../../components/ui.jsx'
+import { SectionEyebrow, ExportBar, ReportLetterhead } from '../../components/ui.jsx'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 
@@ -53,6 +53,7 @@ export default function LabaRugi() {
   return (
     <div className="max-w-2xl">
       <SectionEyebrow>Laporan Laba Rugi — {activeEntity?.legal_name}</SectionEyebrow>
+      <ReportLetterhead entity={activeEntity} title="LAPORAN LABA RUGI" />
       {!loading && (
         <ExportBar
           filename={`laba-rugi-${activeEntity?.code || 'group'}`}

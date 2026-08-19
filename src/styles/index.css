@@ -32,8 +32,22 @@ html, body {
   50% { box-shadow: 0 0 0 3px #7E67AC, 0 0 26px 10px rgba(155,135,196,0.85); }
 }
 
+/* Running text kutipan — bergerak terus tanpa henti, tidak pernah keluar kotak */
+.quote-marquee {
+  width: max-content;
+  animation: quoteScroll 45s linear infinite;
+}
+@keyframes quoteScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+  .quote-marquee { animation-duration: 90s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *:not(.quote-marquee) { animation: none !important; transition: none !important; }
+  .quote-marquee { animation-duration: 90s !important; }
 }
 
 @media print {

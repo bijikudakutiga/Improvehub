@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
 import { SectionEyebrow, RupiahInput } from '../../components/ui.jsx'
 
 export default function AddTransaction() {
   const [params] = useSearchParams()
+  const { id: editId } = useParams()
+  const isEditMode = !!editId
   const navigate = useNavigate()
   const { entities, activeEntityId, loading: entitiesLoading } = useEntity()
   const [kind, setKind] = useState(params.get('kind') === 'pengeluaran' ? 'pengeluaran' : 'pemasukan')
@@ -15,6 +17,25 @@ export default function AddTransaction() {
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [loadingExisting, setLoadingExisting] = useState(isEditMode)
+
+  // Mode edit: muat data transaksi yang sudah ada
+  useEffect(() => {
+    if (!isEditMode) return
+    supabase.from('transactions').select('*').eq('id', editId).single().then(({ data, error }) => {
+      if (error || !data) { setErrorMsg('Transaksi tidak ditemukan.'); setLoadingExisting(false); return }
+      setKind(data.kind)
+      setEntityId(data.entity_id)
+      setForm({
+        category_id: data.category_id || '',
+        amount: String(data.amount),
+        trx_date: data.trx_date,
+        description: data.description || '',
+        counterparty: data.counterparty || ''
+      })
+      setLoadingExisting(false)
+    })
+  }, [editId])
 
   useEffect(() => {
     if (!entityId) return
@@ -22,7 +43,7 @@ export default function AddTransaction() {
       .then(({ data }) => setCategories(data || []))
   }, [entityId, kind])
 
-  useEffect(() => { if (!entityId && entities[0]) setEntityId(entities[0].id) }, [entities])
+  useEffect(() => { if (!isEditMode && !entityId && entities[0]) setEntityId(entities[0].id) }, [entities])
 
   const submit = async e => {
     e.preventDefault()
@@ -35,18 +56,24 @@ export default function AddTransaction() {
 
     setSaving(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { error } = await supabase.from('transactions').insert({
+      const payload = {
         entity_id: entityId,
         category_id: form.category_id,
         kind,
         amount: amountNum,
         trx_date: form.trx_date,
         description: form.description,
-        counterparty: form.counterparty,
-        created_by: user?.id
-      })
-      if (error) throw error
+        counterparty: form.counterparty
+      }
+
+      if (isEditMode) {
+        const { error } = await supabase.from('transactions').update(payload).eq('id', editId)
+        if (error) throw error
+      } else {
+        const { data: { user } } = await supabase.auth.getUser()
+        const { error } = await supabase.from('transactions').insert({ ...payload, created_by: user?.id })
+        if (error) throw error
+      }
       setDone(true)
       setTimeout(() => navigate('/transaksi'), 900)
     } catch (err) {
@@ -58,9 +85,11 @@ export default function AddTransaction() {
 
   const isIncome = kind === 'pemasukan'
 
+  if (loadingExisting) return <p className="text-sm text-ink-400">Memuat data transaksi...</p>
+
   return (
     <div className="max-w-xl">
-      <SectionEyebrow>{isIncome ? 'Input Pemasukan' : 'Input Pengeluaran'}</SectionEyebrow>
+      <SectionEyebrow>{isEditMode ? 'Edit Transaksi' : isIncome ? 'Input Pemasukan' : 'Input Pengeluaran'}</SectionEyebrow>
 
       <div className="mb-5 flex gap-2 rounded-xl bg-lavender-50 p-1">
         <button type="button" onClick={() => setKind('pemasukan')} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${isIncome ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Pemasukan</button>
@@ -82,7 +111,7 @@ export default function AddTransaction() {
             <option value="">Pilih kategori...</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          {categories.length === 0 && <p className="mt-1 text-xs text-amber-600">Belum ada kategori {isIncome ? 'pemasukan' : 'pengeluaran'} untuk PT ini — tambahkan dulu di Pengaturan → Kategori.</p>}
+          {categories.length === 0 && <p className="mt-1 text-xs text-amber-600">Belum ada kategori {isIncome ? 'pemasukan' : 'pengeluaran'} untuk PT ini — tambahkan dulu di menu Kategori.</p>}
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-ink-400">Jumlah (Rp)</label>
@@ -104,7 +133,7 @@ export default function AddTransaction() {
         {errorMsg && <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">⚠ {errorMsg}</p>}
 
         <button type="submit" disabled={saving} className={`w-full rounded-xl py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 ${isIncome ? 'bg-emerald-600' : 'bg-rose-500'}`}>
-          {saving ? 'Menyimpan...' : done ? 'Tersimpan ✓' : `Simpan ${isIncome ? 'Pemasukan' : 'Pengeluaran'}`}
+          {saving ? 'Menyimpan...' : done ? 'Tersimpan ✓' : isEditMode ? 'Simpan Perubahan' : `Simpan ${isIncome ? 'Pemasukan' : 'Pengeluaran'}`}
         </button>
       </form>
     </div>

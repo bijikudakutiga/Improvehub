@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow, ExportBar } from '../../components/ui.jsx'
+import { SectionEyebrow, ExportBar, ReportLetterhead } from '../../components/ui.jsx'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 
@@ -39,6 +39,7 @@ export default function ArusKas() {
   return (
     <div className="max-w-2xl">
       <SectionEyebrow>Laporan Arus Kas — {activeEntity?.legal_name}</SectionEyebrow>
+      <ReportLetterhead entity={activeEntity} title="LAPORAN ARUS KAS" />
       {!loading && (
         <ExportBar
           filename={`arus-kas-${activeEntity?.code || 'group'}`}

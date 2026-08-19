@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 const QUOTES = [
   { text: 'Jangan bekerja untuk uang; buatlah uang bekerja untuk Anda.', author: 'Robert Kiyosaki' },
   { text: 'Aset memasukkan uang ke kantong Anda; liabilitas mengeluarkan uang dari kantong Anda.', author: 'Robert Kiyosaki' },
@@ -23,34 +21,21 @@ const QUOTES = [
   { text: 'Kesuksesan finansial bukan kebetulan, melainkan hasil dari perencanaan yang konsisten.', author: 'Napoleon Hill' }
 ]
 
+// Digabung jadi satu baris panjang, dipisah bullet, lalu diulang 2x supaya
+// animasinya bisa looping mulus tanpa jeda (teknik marquee klasik).
+const LINE = QUOTES.map(q => `"${q.text}" — ${q.author}`).join('   •   ')
+
 export default function QuoteTicker() {
-  const [index, setIndex] = useState(() => Math.floor(Math.random() * QUOTES.length))
-  const [visible, setVisible] = useState(true)
-
-  useEffect(() => {
-    let mounted = true
-    const timer = setInterval(() => {
-      if (!mounted) return
-      setVisible(false)
-      setTimeout(() => {
-        if (!mounted) return
-        setIndex(i => (i + 1) % QUOTES.length)
-        setVisible(true)
-      }, 400)
-    }, 6000)
-    return () => { mounted = false; clearInterval(timer) }
-  }, [])
-
-  const q = QUOTES[index]
-
   return (
     <div className="overflow-hidden rounded-xl2 border border-lavender-200 bg-gradient-to-r from-lavender-100 via-white to-lavender-50 px-5 py-3">
-      <div className={`flex items-center gap-3 transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+      <div className="flex items-center gap-3">
         <span className="star-motif h-3 w-3 shrink-0 bg-lavender-400" />
-        <p className="truncate text-xs text-ink-900 sm:text-sm">
-          <span className="italic">"{q.text}"</span>
-          <span className="ml-2 font-medium text-lavender-500">— {q.author}</span>
-        </p>
+        <div className="relative flex-1 overflow-hidden">
+          <div className="quote-marquee flex whitespace-nowrap text-xs text-ink-900 sm:text-sm">
+            <span className="pr-10 italic">{LINE}</span>
+            <span className="pr-10 italic" aria-hidden="true">{LINE}</span>
+          </div>
+        </div>
       </div>
     </div>
   )

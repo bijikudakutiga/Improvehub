@@ -48,6 +48,7 @@ export default function App() {
 
         <Route path="/transaksi" element={<TransactionList />} />
         <Route path="/transaksi/tambah" element={<AddTransaction />} />
+        <Route path="/transaksi/edit/:id" element={<AddTransaction />} />
         <Route path="/transaksi/kategori" element={<Categories />} />
 
         <Route path="/laporan/neraca" element={<Neraca />} />

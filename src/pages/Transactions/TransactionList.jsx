@@ -8,12 +8,23 @@ export default function TransactionList() {
   const { activeEntityId } = useEntity()
   const [rows, setRows] = useState([])
   const [filter, setFilter] = useState('semua')
+  const [deletingId, setDeletingId] = useState(null)
 
-  useEffect(() => {
+  const load = () => {
     let query = supabase.from('transactions').select('*, categories(name)').order('trx_date', { ascending: false }).limit(100)
     if (activeEntityId) query = query.eq('entity_id', activeEntityId)
     query.then(({ data }) => setRows(data || []))
-  }, [activeEntityId])
+  }
+  useEffect(load, [activeEntityId])
+
+  const remove = async id => {
+    if (!confirm('Hapus transaksi ini? Jurnal akuntansinya juga ikut terhapus. Tindakan ini tidak bisa dibatalkan.')) return
+    setDeletingId(id)
+    const { error } = await supabase.from('transactions').delete().eq('id', id)
+    setDeletingId(null)
+    if (error) { alert('Gagal menghapus: ' + error.message); return }
+    load()
+  }
 
   const filtered = rows.filter(r => filter === 'semua' || r.kind === filter)
 
@@ -32,19 +43,20 @@ export default function TransactionList() {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl2 border border-lavender-200 bg-white">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl2 border border-lavender-200 bg-white">
+        <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="border-b border-lavender-100 text-left text-xs uppercase tracking-wide text-ink-400">
               <th className="px-5 py-3 font-medium">Tanggal</th>
               <th className="px-5 py-3 font-medium">Kategori</th>
               <th className="px-5 py-3 font-medium">Keterangan</th>
               <th className="px-5 py-3 text-right font-medium">Jumlah</th>
+              <th className="px-5 py-3 text-right font-medium">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={4} className="px-5 py-12 text-center text-ink-400">Belum ada transaksi.</td></tr>
+              <tr><td colSpan={5} className="px-5 py-12 text-center text-ink-400">Belum ada transaksi.</td></tr>
             )}
             {filtered.map(t => (
               <tr key={t.id} className="border-b border-lavender-50 last:border-0 hover:bg-lavender-50/50">
@@ -53,6 +65,14 @@ export default function TransactionList() {
                 <td className="px-5 py-3 text-ink-400">{t.description || '—'}</td>
                 <td className={`font-mono px-5 py-3 text-right font-medium ${t.kind === 'pemasukan' ? 'text-emerald-600' : 'text-rose-500'}`}>
                   {t.kind === 'pemasukan' ? '+' : '-'} Rp {Number(t.amount).toLocaleString('id-ID')}
+                </td>
+                <td className="px-5 py-3 text-right">
+                  <div className="flex justify-end gap-2">
+                    <Link to={`/transaksi/edit/${t.id}`} className="rounded-lg border border-lavender-200 px-2.5 py-1 text-xs text-ink-900 hover:bg-lavender-50">Edit</Link>
+                    <button onClick={() => remove(t.id)} disabled={deletingId === t.id} className="rounded-lg border border-rose-200 px-2.5 py-1 text-xs text-rose-500 hover:bg-rose-50 disabled:opacity-50">
+                      {deletingId === t.id ? '...' : 'Hapus'}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

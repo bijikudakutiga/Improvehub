@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow, ExportBar } from '../../components/ui.jsx'
+import { SectionEyebrow, ExportBar, ReportLetterhead } from '../../components/ui.jsx'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 const MONTHS_LONG = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
@@ -140,13 +140,11 @@ export default function Neraca() {
       )}
 
       {/* Kop Surat — ikut tercetak di PDF */}
-      <div className="mb-5 rounded-xl2 border border-lavender-200 bg-white p-6 text-center">
-        <p className="font-display text-base font-semibold text-ink-900">{entity ? entity.legal_name : 'IMPROVEHUB Group (Konsolidasi 3 PT)'}</p>
-        {entity && <p className="font-mono text-xs text-ink-400">NPWP: {entity.npwp}</p>}
-        {entity && <p className="text-xs text-ink-400">{entity.address}</p>}
-        <p className="mt-2 text-sm font-medium text-lavender-500">LAPORAN POSISI KEUANGAN (NERACA)</p>
-        <p className="text-xs text-ink-400">Per {MONTHS_LONG[period.month - 1]} {period.year}</p>
-      </div>
+      <ReportLetterhead
+        entity={entity || { legal_name: 'IMPROVEHUB', address: 'Jl. Singosari I No.27, Pleburan, Kec. Semarang Sel., Kota Semarang, Jawa Tengah 50241' }}
+        title="LAPORAN POSISI KEUANGAN (NERACA)"
+        period={`Per ${MONTHS_LONG[period.month - 1]} ${period.year}`}
+      />
 
       {loading ? (
         <p className="text-sm text-ink-400">Memuat...</p>

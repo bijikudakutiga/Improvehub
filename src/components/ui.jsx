@@ -84,6 +84,19 @@ export function RupiahInput({ value, onChange, className = '', ...props }) {
   )
 }
 
+// Kop surat laporan — konsisten dipakai di semua laporan (per PT maupun gabungan Group)
+export function ReportLetterhead({ entity, title, period }) {
+  return (
+    <div className="mb-5 rounded-xl2 border border-lavender-200 bg-white p-6 text-center">
+      <p className="font-display text-base font-semibold text-ink-900">{entity?.legal_name}</p>
+      {entity?.npwp && <p className="font-mono text-xs text-ink-400">NPWP: {entity.npwp}</p>}
+      {entity?.address && <p className="text-xs text-ink-400">{entity.address}</p>}
+      <p className="mt-2 text-sm font-medium text-lavender-500">{title}</p>
+      {period && <p className="text-xs text-ink-400">{period}</p>}
+    </div>
+  )
+}
+
 export function ExportBar({ filename, rows, columns }) {
   const downloadCSV = () => {
     const header = columns.map(c => c.label).join(',')
