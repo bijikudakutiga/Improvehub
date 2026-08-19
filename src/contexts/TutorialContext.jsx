@@ -5,6 +5,7 @@ const TutorialContext = createContext(null)
 
 export function TutorialProvider({ children }) {
   const [active, setActive] = useState(false)
+  const [spotlight, setSpotlight] = useState(null) // key elemen yang sedang disorot, mis. 'menu-pajak'
 
   useEffect(() => {
     if (!localStorage.getItem(SEEN_KEY)) {
@@ -17,10 +18,11 @@ export function TutorialProvider({ children }) {
   const finish = () => {
     localStorage.setItem(SEEN_KEY, 'true')
     setActive(false)
+    setSpotlight(null)
   }
 
   return (
-    <TutorialContext.Provider value={{ active, start, finish }}>
+    <TutorialContext.Provider value={{ active, start, finish, spotlight, setSpotlight }}>
       {children}
     </TutorialContext.Provider>
   )

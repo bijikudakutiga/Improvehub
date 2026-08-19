@@ -67,6 +67,23 @@ export function ActionCard({ to, title, description, tone, icon }) {
 }
 
 // Tombol unduh CSV (bisa dibuka di Excel) + cetak/simpan PDF
+// Input angka Rupiah yang aman — user bebas ketik dengan/tanpa titik ribuan,
+// tersimpan sebagai angka murni. Menghindari bug input type="number" native
+// yang menolak format "50.000.000" (titik dibaca sebagai desimal oleh browser).
+export function RupiahInput({ value, onChange, className = '', ...props }) {
+  const display = value === '' || value === null || value === undefined || isNaN(value) ? '' : Number(value).toLocaleString('id-ID')
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      value={display}
+      onChange={e => onChange(e.target.value.replace(/[^0-9]/g, ''))}
+      className={`font-mono ${className}`}
+      {...props}
+    />
+  )
+}
+
 export function ExportBar({ filename, rows, columns }) {
   const downloadCSV = () => {
     const header = columns.map(c => c.label).join(',')

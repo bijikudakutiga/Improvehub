@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow } from '../../components/ui.jsx'
+import { SectionEyebrow, RupiahInput } from '../../components/ui.jsx'
 
 export default function AddTransaction() {
   const [params] = useSearchParams()
@@ -14,6 +14,7 @@ export default function AddTransaction() {
   const [form, setForm] = useState({ category_id: '', amount: '', trx_date: new Date().toISOString().slice(0, 10), description: '', counterparty: '' })
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     if (!entityId) return
@@ -23,29 +24,35 @@ export default function AddTransaction() {
 
   useEffect(() => { if (!entityId && entities[0]) setEntityId(entities[0].id) }, [entities])
 
-  const [errorMsg, setErrorMsg] = useState('')
-
   const submit = async e => {
     e.preventDefault()
-    setSaving(true)
     setErrorMsg('')
-    const { data: { user } } = await supabase.auth.getUser()
-    const { error } = await supabase.from('transactions').insert({
-      entity_id: entityId,
-      category_id: form.category_id || null,
-      kind,
-      amount: Number(form.amount),
-      trx_date: form.trx_date,
-      description: form.description,
-      counterparty: form.counterparty,
-      created_by: user?.id
-    })
-    setSaving(false)
-    if (error) {
-      setErrorMsg(error.message || 'Gagal menyimpan transaksi. Coba lagi.')
-    } else {
+
+    if (!entityId) { setErrorMsg('PT belum terpilih. Coba muat ulang halaman.'); return }
+    if (!form.category_id) { setErrorMsg('Pilih kategori terlebih dahulu.'); return }
+    const amountNum = Number(form.amount)
+    if (!form.amount || isNaN(amountNum) || amountNum <= 0) { setErrorMsg('Jumlah harus diisi dan lebih dari 0.'); return }
+
+    setSaving(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const { error } = await supabase.from('transactions').insert({
+        entity_id: entityId,
+        category_id: form.category_id,
+        kind,
+        amount: amountNum,
+        trx_date: form.trx_date,
+        description: form.description,
+        counterparty: form.counterparty,
+        created_by: user?.id
+      })
+      if (error) throw error
       setDone(true)
       setTimeout(() => navigate('/transaksi'), 900)
+    } catch (err) {
+      setErrorMsg(err?.message || err?.error_description || 'Gagal menyimpan transaksi. Coba lagi.')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -56,8 +63,8 @@ export default function AddTransaction() {
       <SectionEyebrow>{isIncome ? 'Input Pemasukan' : 'Input Pengeluaran'}</SectionEyebrow>
 
       <div className="mb-5 flex gap-2 rounded-xl bg-lavender-50 p-1">
-        <button onClick={() => setKind('pemasukan')} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${isIncome ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Pemasukan</button>
-        <button onClick={() => setKind('pengeluaran')} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${!isIncome ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Pengeluaran</button>
+        <button type="button" onClick={() => setKind('pemasukan')} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${isIncome ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Pemasukan</button>
+        <button type="button" onClick={() => setKind('pengeluaran')} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${!isIncome ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Pengeluaran</button>
       </div>
 
       <form onSubmit={submit} className={`space-y-4 rounded-xl2 border-2 bg-white p-6 ${isIncome ? 'border-mint' : 'border-blush'}`}>
@@ -73,10 +80,11 @@ export default function AddTransaction() {
             <option value="">Pilih kategori...</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
+          {categories.length === 0 && <p className="mt-1 text-xs text-amber-600">Belum ada kategori {isIncome ? 'pemasukan' : 'pengeluaran'} untuk PT ini — tambahkan dulu di Pengaturan → Kategori.</p>}
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-ink-400">Jumlah (Rp)</label>
-          <input type="number" min="1" required value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="font-mono w-full rounded-xl border border-lavender-200 px-3 py-2.5 text-sm" />
+          <RupiahInput required value={form.amount} onChange={v => setForm({ ...form, amount: v })} className="w-full rounded-xl border border-lavender-200 px-3 py-2.5 text-sm" />
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-ink-400">Tanggal</label>

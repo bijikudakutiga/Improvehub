@@ -21,6 +21,17 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #DCD1F0; border-radius: 999px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
+/* Sorotan menyala untuk elemen yang sedang dijelaskan tutorial */
+.tutorial-glow {
+  position: relative;
+  border-radius: 0.75rem;
+  animation: tutorialGlow 1.4s ease-in-out infinite;
+}
+@keyframes tutorialGlow {
+  0%, 100% { box-shadow: 0 0 0 3px #9B87C4, 0 0 14px 4px rgba(155,135,196,0.5); }
+  50% { box-shadow: 0 0 0 3px #7E67AC, 0 0 26px 10px rgba(155,135,196,0.85); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
