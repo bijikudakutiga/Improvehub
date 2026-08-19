@@ -28,14 +28,17 @@ export default function QuoteTicker() {
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
+    let mounted = true
     const timer = setInterval(() => {
+      if (!mounted) return
       setVisible(false)
       setTimeout(() => {
+        if (!mounted) return
         setIndex(i => (i + 1) % QUOTES.length)
         setVisible(true)
       }, 400)
-    }, 8000)
-    return () => clearInterval(timer)
+    }, 6000)
+    return () => { mounted = false; clearInterval(timer) }
   }, [])
 
   const q = QUOTES[index]
