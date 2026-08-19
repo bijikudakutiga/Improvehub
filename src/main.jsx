@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { EntityProvider } from './contexts/EntityContext.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
+import { TutorialProvider } from './contexts/TutorialContext.jsx'
 import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,7 +12,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <EntityProvider>
-          <App />
+          <TutorialProvider>
+            <App />
+          </TutorialProvider>
         </EntityProvider>
       </AuthProvider>
     </BrowserRouter>

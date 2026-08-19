@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar.jsx'
 import TopBar from './TopBar.jsx'
 import InstallPrompt from './InstallPrompt.jsx'
+import Tutorial from './Tutorial.jsx'
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
@@ -19,6 +20,7 @@ export default function Layout() {
         </main>
       </div>
       <InstallPrompt />
+      <Tutorial />
     </div>
   )
 }

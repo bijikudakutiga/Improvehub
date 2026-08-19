@@ -3,11 +3,40 @@ import Layout from './components/Layout.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+
 import TransactionList from './pages/Transactions/TransactionList.jsx'
 import AddTransaction from './pages/Transactions/AddTransaction.jsx'
 import Categories from './pages/Transactions/Categories.jsx'
+
 import Neraca from './pages/Reports/Neraca.jsx'
 import LabaRugi from './pages/Reports/LabaRugi.jsx'
+import ArusKas from './pages/Reports/ArusKas.jsx'
+
+import AssetList from './pages/Assets/AssetList.jsx'
+import Depreciation from './pages/Assets/Depreciation.jsx'
+
+import Budget from './pages/Budget/Budget.jsx'
+import BudgetRealization from './pages/Budget/BudgetRealization.jsx'
+
+import TaxSummary from './pages/Tax/TaxSummary.jsx'
+import PPh21 from './pages/Tax/PPh21.jsx'
+import PPh23 from './pages/Tax/PPh23.jsx'
+import PPN from './pages/Tax/PPN.jsx'
+import PPhBadan from './pages/Tax/PPhBadan.jsx'
+import TaxCalendar from './pages/Tax/TaxCalendar.jsx'
+import LaporPajak from './pages/Tax/LaporPajak.jsx'
+
+import EntityDetail from './pages/Entities/EntityDetail.jsx'
+import Consolidated from './pages/Entities/Consolidated.jsx'
+
+import UserList from './pages/Users/UserList.jsx'
+import RolePage from './pages/Users/RolePage.jsx'
+
+import CompanyProfile from './pages/Settings/CompanyProfile.jsx'
+import CategorySettings from './pages/Settings/CategorySettings.jsx'
+import Notifications from './pages/Settings/Notifications.jsx'
+import Appearance from './pages/Settings/Appearance.jsx'
+
 import { ComingSoon } from './components/ui.jsx'
 
 export default function App() {
@@ -23,37 +52,37 @@ export default function App() {
 
         <Route path="/laporan/neraca" element={<Neraca />} />
         <Route path="/laporan/laba-rugi" element={<LabaRugi />} />
-        <Route path="/laporan/arus-kas" element={<ComingSoon title="Laporan Arus Kas" />} />
+        <Route path="/laporan/arus-kas" element={<ArusKas />} />
         <Route path="/laporan/perubahan-ekuitas" element={<ComingSoon title="Laporan Perubahan Ekuitas" />} />
         <Route path="/laporan/proyeksi" element={<ComingSoon title="Proyeksi Keuangan" />} />
         <Route path="/laporan/rasio" element={<ComingSoon title="Rasio Keuangan" />} />
 
-        <Route path="/pajak" element={<ComingSoon title="Ringkasan Pajak" />} />
-        <Route path="/pajak/pph-badan" element={<ComingSoon title="PPh Badan (25/29)" />} />
-        <Route path="/pajak/pph-21" element={<ComingSoon title="PPh 21" />} />
-        <Route path="/pajak/pph-23-26" element={<ComingSoon title="PPh 23/26" />} />
-        <Route path="/pajak/ppn" element={<ComingSoon title="PPN & e-Faktur" />} />
-        <Route path="/pajak/kalender" element={<ComingSoon title="Kalender Pajak" />} />
-        <Route path="/pajak/lapor" element={<ComingSoon title="Lapor Pajak" />} />
+        <Route path="/pajak" element={<TaxSummary />} />
+        <Route path="/pajak/pph-badan" element={<PPhBadan />} />
+        <Route path="/pajak/pph-21" element={<PPh21 />} />
+        <Route path="/pajak/pph-23-26" element={<PPh23 />} />
+        <Route path="/pajak/ppn" element={<PPN />} />
+        <Route path="/pajak/kalender" element={<TaxCalendar />} />
+        <Route path="/pajak/lapor" element={<LaporPajak />} />
 
-        <Route path="/aset" element={<ComingSoon title="Daftar Aset Tetap" />} />
-        <Route path="/aset/penyusutan" element={<ComingSoon title="Penyusutan Aset" />} />
+        <Route path="/aset" element={<AssetList />} />
+        <Route path="/aset/penyusutan" element={<Depreciation />} />
 
-        <Route path="/anggaran" element={<ComingSoon title="Anggaran per Kategori" />} />
-        <Route path="/anggaran/realisasi" element={<ComingSoon title="Realisasi vs Anggaran" />} />
+        <Route path="/anggaran" element={<Budget />} />
+        <Route path="/anggaran/realisasi" element={<BudgetRealization />} />
 
-        <Route path="/entitas/spk" element={<ComingSoon title="PT. Sumber Pengembangan Karya" />} />
-        <Route path="/entitas/fyi" element={<ComingSoon title="PT. FYI Psychology Indonesia" />} />
-        <Route path="/entitas/igl" element={<ComingSoon title="I-Global" />} />
-        <Route path="/entitas/konsolidasi" element={<ComingSoon title="Laporan Konsolidasi" />} />
+        <Route path="/entitas/spk" element={<EntityDetail code="SPK" />} />
+        <Route path="/entitas/fyi" element={<EntityDetail code="FYI" />} />
+        <Route path="/entitas/igl" element={<EntityDetail code="IGL" />} />
+        <Route path="/entitas/konsolidasi" element={<Consolidated />} />
 
-        <Route path="/pengguna" element={<ComingSoon title="Daftar Pengguna" />} />
-        <Route path="/pengguna/role" element={<ComingSoon title="Role & Izin" />} />
+        <Route path="/pengguna" element={<UserList />} />
+        <Route path="/pengguna/role" element={<RolePage />} />
 
-        <Route path="/pengaturan/profil" element={<ComingSoon title="Profil Perusahaan" />} />
-        <Route path="/pengaturan/akun" element={<ComingSoon title="Kategori & Pemetaan Akun" />} />
-        <Route path="/pengaturan/notifikasi" element={<ComingSoon title="Notifikasi" />} />
-        <Route path="/pengaturan/tampilan" element={<ComingSoon title="Tampilan" />} />
+        <Route path="/pengaturan/profil" element={<CompanyProfile />} />
+        <Route path="/pengaturan/akun" element={<CategorySettings />} />
+        <Route path="/pengaturan/notifikasi" element={<Notifications />} />
+        <Route path="/pengaturan/tampilan" element={<Appearance />} />
       </Route>
     </Routes>
   )

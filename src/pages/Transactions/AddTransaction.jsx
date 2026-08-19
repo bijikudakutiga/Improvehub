@@ -23,9 +23,12 @@ export default function AddTransaction() {
 
   useEffect(() => { if (!entityId && entities[0]) setEntityId(entities[0].id) }, [entities])
 
+  const [errorMsg, setErrorMsg] = useState('')
+
   const submit = async e => {
     e.preventDefault()
     setSaving(true)
+    setErrorMsg('')
     const { data: { user } } = await supabase.auth.getUser()
     const { error } = await supabase.from('transactions').insert({
       entity_id: entityId,
@@ -38,7 +41,12 @@ export default function AddTransaction() {
       created_by: user?.id
     })
     setSaving(false)
-    if (!error) { setDone(true); setTimeout(() => navigate('/transaksi'), 900) }
+    if (error) {
+      setErrorMsg(error.message || 'Gagal menyimpan transaksi. Coba lagi.')
+    } else {
+      setDone(true)
+      setTimeout(() => navigate('/transaksi'), 900)
+    }
   }
 
   const isIncome = kind === 'pemasukan'
@@ -82,6 +90,8 @@ export default function AddTransaction() {
           <label className="mb-1 block text-xs font-medium text-ink-400">Nama Pihak (opsional)</label>
           <input value={form.counterparty} onChange={e => setForm({ ...form, counterparty: e.target.value })} className="w-full rounded-xl border border-lavender-200 px-3 py-2.5 text-sm" />
         </div>
+
+        {errorMsg && <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">⚠ {errorMsg}</p>}
 
         <button type="submit" disabled={saving} className={`w-full rounded-xl py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 ${isIncome ? 'bg-emerald-600' : 'bg-rose-500'}`}>
           {saving ? 'Menyimpan...' : done ? 'Tersimpan ✓' : `Simpan ${isIncome ? 'Pemasukan' : 'Pengeluaran'}`}

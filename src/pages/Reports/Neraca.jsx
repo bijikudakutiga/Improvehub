@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow } from '../../components/ui.jsx'
+import { SectionEyebrow, ExportBar } from '../../components/ui.jsx'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 
@@ -90,6 +90,17 @@ export default function Neraca() {
   return (
     <div>
       <SectionEyebrow>Laporan Neraca — {activeEntity?.legal_name}</SectionEyebrow>
+      {!loading && (
+        <ExportBar
+          filename={`neraca-${activeEntity?.code || 'group'}`}
+          rows={[...groups.aset, ...groups.kewajiban, ...groups.ekuitas]}
+          columns={[
+            { label: 'Tipe', key: 'type' },
+            { label: 'Akun', key: 'name' },
+            { label: 'Saldo', value: r => Math.abs(r.balance) }
+          ]}
+        />
+      )}
       {loading ? (
         <p className="text-sm text-ink-400">Memuat...</p>
       ) : (

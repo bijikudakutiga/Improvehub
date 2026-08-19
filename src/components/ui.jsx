@@ -66,6 +66,36 @@ export function ActionCard({ to, title, description, tone, icon }) {
   )
 }
 
+// Tombol unduh CSV (bisa dibuka di Excel) + cetak/simpan PDF
+export function ExportBar({ filename, rows, columns }) {
+  const downloadCSV = () => {
+    const header = columns.map(c => c.label).join(',')
+    const body = rows.map(r => columns.map(c => {
+      const val = typeof c.value === 'function' ? c.value(r) : r[c.key]
+      return `"${String(val ?? '').replace(/"/g, '""')}"`
+    }).join(',')).join('\n')
+    const csv = '\uFEFF' + header + '\n' + body
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${filename}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  return (
+    <div className="mb-4 flex gap-2 print:hidden">
+      <button onClick={downloadCSV} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
+        ⬇ Unduh Excel (CSV)
+      </button>
+      <button onClick={() => window.print()} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
+        🖨 Cetak / Simpan PDF
+      </button>
+    </div>
+  )
+}
+
 export function ComingSoon({ title }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl2 border border-dashed border-lavender-300 bg-white/60 py-24 text-center">
