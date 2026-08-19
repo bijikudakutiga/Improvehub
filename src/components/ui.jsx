@@ -48,16 +48,20 @@ export function KpiCard({ label, value, prefix = 'Rp ', tone = 'default', sub })
 // Kartu aksi dengan border menarik — dipakai untuk "Input Pemasukan" / "Input Pengeluaran"
 export function ActionCard({ to, title, description, tone, icon }) {
   const tones = {
-    income: 'border-mint hover:border-mint hover:shadow-mint/40 from-mint/20',
-    expense: 'border-blush hover:border-blush hover:shadow-blush/40 from-blush/20'
+    income: 'border-emerald-300 bg-emerald-50 hover:bg-emerald-100',
+    expense: 'border-rose-300 bg-rose-50 hover:bg-rose-100'
+  }
+  const iconTones = {
+    income: 'bg-emerald-500 text-white',
+    expense: 'bg-rose-500 text-white'
   }
   return (
     <Link
       to={to}
-      className={`group relative overflow-hidden rounded-xl2 border-2 border-dashed bg-gradient-to-br to-white p-5 transition-all hover:border-solid hover:shadow-lg ${tones[tone]}`}
+      className={`led-border group relative overflow-hidden rounded-xl2 border-2 p-5 transition-colors ${tones[tone]}`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-2xl">{icon}</span>
+        <span className={`flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold ${iconTones[tone]}`}>{icon}</span>
         <span className="text-lavender-400 transition-transform group-hover:translate-x-1">→</span>
       </div>
       <p className="font-display mt-3 text-base font-semibold text-ink-900">{title}</p>
