@@ -32,7 +32,36 @@ html, body {
   50% { box-shadow: 0 0 0 3px #7E67AC, 0 0 26px 10px rgba(155,135,196,0.85); }
 }
 
-/* Running text kutipan — bergerak terus tanpa henti, tidak pernah keluar kotak */
+/* LED berjalan warna ungu muda — dipakai di kartu Input Pemasukan/Pengeluaran */
+@property --led-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.led-border {
+  position: relative;
+  border-radius: 1.25rem;
+  isolation: isolate;
+}
+.led-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--led-angle), transparent 0%, #C4B4E3 12%, #9B87C4 22%, #EFEAF9 30%, transparent 42%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: led-spin 2.8s linear infinite;
+  pointer-events: none;
+}
+@keyframes led-spin {
+  to { --led-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .led-border::before { animation-duration: 8s; }
+}
 .quote-marquee {
   width: max-content;
   animation: quoteScroll 45s linear infinite;
