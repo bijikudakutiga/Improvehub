@@ -134,36 +134,39 @@ export default function Tutorial() {
   const handleSkip = () => finish()
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end bg-ink-900/45 p-4 sm:items-center sm:justify-center">
-      <div className="animate-fadeIn w-full max-w-md">
-        <div className="mb-[-24px] flex justify-center">
-          <img src="/mascot.png" alt="ImproveBot" className="h-40 w-auto drop-shadow-xl" />
-        </div>
-        <div className="rounded-xl2 border-2 border-lavender-300 bg-white p-5 pt-8 shadow-2xl">
-          <div className="mb-2 flex items-center gap-2">
-            <span className="star-motif h-2.5 w-2.5 bg-lavender-400" />
-            <p className="font-display text-xs font-semibold uppercase tracking-wide text-lavender-500">ImproveBot — {step.title}</p>
+    <>
+      <div className="fixed inset-0 z-[90] bg-ink-900/45" onClick={handleSkip} />
+      <div className="pointer-events-none fixed inset-0 z-[130] flex flex-col items-center justify-end p-4 sm:items-center sm:justify-center">
+        <div className="animate-fadeIn pointer-events-auto w-full max-w-md">
+          <div className="mb-[-24px] flex justify-center">
+            <img src="/mascot.png" alt="ImproveBot" className="h-40 w-auto drop-shadow-xl" />
           </div>
-          <p onClick={handleNext} className="min-h-[72px] cursor-pointer text-sm leading-relaxed text-ink-900">
-            {displayed}
-            {typing && <span className="animate-pulse">▍</span>}
-          </p>
-
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex flex-wrap gap-1">
-              {STEPS.map((_, i) => (
-                <span key={i} className={`h-1.5 rounded-full transition-all ${i === stepIndex ? 'w-4 bg-lavender-500' : 'w-1.5 bg-lavender-200'}`} />
-              ))}
+          <div className="rounded-xl2 border-2 border-lavender-300 bg-white p-5 pt-8 shadow-2xl">
+            <div className="mb-2 flex items-center gap-2">
+              <span className="star-motif h-2.5 w-2.5 bg-lavender-400" />
+              <p className="font-display text-xs font-semibold uppercase tracking-wide text-lavender-500">ImproveBot — {step.title}</p>
             </div>
-            <div className="flex gap-2">
-              <button onClick={handleSkip} className="rounded-lg px-3 py-1.5 text-xs text-ink-400 hover:text-ink-900">Lewati</button>
-              <button onClick={handleNext} className="rounded-xl bg-ink-900 px-4 py-1.5 text-xs font-medium text-white hover:opacity-90">
-                {typing ? 'Ketik cepat' : stepIndex < STEPS.length - 1 ? 'Lanjut →' : 'Selesai'}
-              </button>
+            <p onClick={handleNext} className="min-h-[72px] cursor-pointer text-sm leading-relaxed text-ink-900">
+              {displayed}
+              {typing && <span className="animate-pulse">▍</span>}
+            </p>
+
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex flex-wrap gap-1">
+                {STEPS.map((_, i) => (
+                  <span key={i} className={`h-1.5 rounded-full transition-all ${i === stepIndex ? 'w-4 bg-lavender-500' : 'w-1.5 bg-lavender-200'}`} />
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button onClick={handleSkip} className="rounded-lg px-3 py-1.5 text-xs text-ink-400 hover:text-ink-900">Lewati</button>
+                <button onClick={handleNext} className="rounded-xl bg-ink-900 px-4 py-1.5 text-xs font-medium text-white hover:opacity-90">
+                  {typing ? 'Ketik cepat' : stepIndex < STEPS.length - 1 ? 'Lanjut →' : 'Selesai'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

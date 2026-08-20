@@ -33,6 +33,7 @@ import UserList from './pages/Users/UserList.jsx'
 import RolePage from './pages/Users/RolePage.jsx'
 
 import CompanyProfile from './pages/Settings/CompanyProfile.jsx'
+import CapitalEntries from './pages/Settings/CapitalEntries.jsx'
 import CategorySettings from './pages/Settings/CategorySettings.jsx'
 import Notifications from './pages/Settings/Notifications.jsx'
 import Appearance from './pages/Settings/Appearance.jsx'
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="/pengguna/role" element={<RolePage />} />
 
         <Route path="/pengaturan/profil" element={<CompanyProfile />} />
+        <Route path="/pengaturan/modal" element={<CapitalEntries />} />
         <Route path="/pengaturan/akun" element={<CategorySettings />} />
         <Route path="/pengaturan/notifikasi" element={<Notifications />} />
         <Route path="/pengaturan/tampilan" element={<Appearance />} />

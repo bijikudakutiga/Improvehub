@@ -12,6 +12,13 @@
     <title>IMPROVEHUB | Finance & Tax</title>
   </head>
   <body class="bg-tint">
+    <div id="app-splash" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#EFEAF9;">
+      <img src="/logo.png" alt="IMPROVEHUB" style="width:56vw;max-width:260px;height:auto;animation:splashPulse 1.5s ease-in-out infinite;" />
+    </div>
+    <style>
+      @keyframes splashPulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.06);opacity:.8;} }
+      #app-splash.splash-hide { opacity:0; transition:opacity .5s ease; pointer-events:none; }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

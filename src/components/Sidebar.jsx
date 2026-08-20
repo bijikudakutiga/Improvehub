@@ -68,6 +68,7 @@ const MENU = [
     label: 'Pengaturan', icon: '⚙', tutorialKey: 'pengaturan',
     children: [
       { label: 'Profil Perusahaan', to: '/pengaturan/profil' },
+      { label: 'Modal & Utang Lain', to: '/pengaturan/modal' },
       { label: 'Kategori & Pemetaan Akun', to: '/pengaturan/akun' },
       { label: 'Notifikasi', to: '/pengaturan/notifikasi' },
       { label: 'Tampilan', to: '/pengaturan/tampilan' }

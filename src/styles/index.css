@@ -64,7 +64,7 @@ html, body {
 }
 .quote-marquee {
   width: max-content;
-  animation: quoteScroll 120s linear infinite;
+  animation: quoteScroll 90s linear infinite;
 }
 @keyframes quoteScroll {
   from { transform: translateX(0); }

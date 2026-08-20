@@ -23,6 +23,9 @@ export default function PPh23() {
       entity_id: entityId, tax_type: type, period_month: now.getMonth() + 1, period_year: now.getFullYear(),
       taxable_amount: Number(amount), tax_amount: taxAmount
     })
+    await supabase.rpc('fn_record_tax_liability', {
+      p_entity_id: entityId, p_tax_type: type, p_amount: taxAmount, p_entry_date: now.toISOString().slice(0, 10)
+    })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }

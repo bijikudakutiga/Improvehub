@@ -33,7 +33,10 @@ export default function PPh21() {
     await supabase.from('tax_filings').insert({
       entity_id: entityId, tax_type: 'pph21', period_month: now.getMonth() + 1, period_year: now.getFullYear(), tax_amount: totalTax
     })
-    alert('Kewajiban PPh 21 bulan ini tersimpan di Ringkasan Pajak.')
+    await supabase.rpc('fn_record_tax_liability', {
+      p_entity_id: entityId, p_tax_type: 'pph21', p_amount: totalTax, p_entry_date: now.toISOString().slice(0, 10)
+    })
+    alert('Kewajiban PPh 21 bulan ini tersimpan di Ringkasan Pajak dan Laporan Neraca.')
   }
 
   const totalTax = employees.reduce((s, emp) => s + calculatePPh21Monthly(Number(emp.gross_salary), emp.ptkp_status).monthlyTax, 0)

@@ -13,13 +13,15 @@ export default function AddTransaction() {
   const [kind, setKind] = useState(params.get('kind') === 'pengeluaran' ? 'pengeluaran' : 'pemasukan')
   const [entityId, setEntityId] = useState(activeEntityId || entities[0]?.id || '')
   const [categories, setCategories] = useState([])
-  const [form, setForm] = useState({ category_id: '', amount: '', trx_date: new Date().toISOString().slice(0, 10), description: '', counterparty: '' })
+  const [form, setForm] = useState({
+    category_id: '', amount: '', trx_date: new Date().toISOString().slice(0, 10),
+    description: '', counterparty: '', payment_status: 'lunas', due_date: ''
+  })
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [loadingExisting, setLoadingExisting] = useState(isEditMode)
 
-  // Mode edit: muat data transaksi yang sudah ada
   useEffect(() => {
     if (!isEditMode) return
     supabase.from('transactions').select('*').eq('id', editId).single().then(({ data, error }) => {
@@ -31,7 +33,9 @@ export default function AddTransaction() {
         amount: String(data.amount),
         trx_date: data.trx_date,
         description: data.description || '',
-        counterparty: data.counterparty || ''
+        counterparty: data.counterparty || '',
+        payment_status: data.payment_status || 'lunas',
+        due_date: data.due_date || ''
       })
       setLoadingExisting(false)
     })
@@ -53,6 +57,7 @@ export default function AddTransaction() {
     if (!form.category_id) { setErrorMsg('Pilih kategori terlebih dahulu.'); return }
     const amountNum = Number(form.amount)
     if (!form.amount || isNaN(amountNum) || amountNum <= 0) { setErrorMsg('Jumlah harus diisi dan lebih dari 0.'); return }
+    if (form.payment_status === 'belum_lunas' && !form.due_date) { setErrorMsg('Isi tanggal jatuh tempo untuk transaksi yang belum lunas.'); return }
 
     setSaving(true)
     try {
@@ -63,7 +68,9 @@ export default function AddTransaction() {
         amount: amountNum,
         trx_date: form.trx_date,
         description: form.description,
-        counterparty: form.counterparty
+        counterparty: form.counterparty,
+        payment_status: form.payment_status,
+        due_date: form.payment_status === 'belum_lunas' ? form.due_date : null
       }
 
       if (isEditMode) {
@@ -121,6 +128,23 @@ export default function AddTransaction() {
           <label className="mb-1 block text-xs font-medium text-ink-400">Tanggal</label>
           <input type="date" required value={form.trx_date} onChange={e => setForm({ ...form, trx_date: e.target.value })} className="w-full rounded-xl border border-lavender-200 px-3 py-2.5 text-sm" />
         </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-ink-400">Status Pembayaran</label>
+          <div className="flex gap-2 rounded-xl bg-lavender-50 p-1">
+            <button type="button" onClick={() => setForm({ ...form, payment_status: 'lunas' })} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${form.payment_status === 'lunas' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Lunas</button>
+            <button type="button" onClick={() => setForm({ ...form, payment_status: 'belum_lunas' })} className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${form.payment_status === 'belum_lunas' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-400'}`}>Belum Lunas</button>
+          </div>
+          {form.payment_status === 'belum_lunas' && (
+            <div className="animate-fadeIn mt-3 rounded-xl bg-amber-50 p-3">
+              <label className="mb-1 block text-xs font-medium text-amber-700">
+                Tanggal Jatuh Tempo — akan tercatat sebagai {isIncome ? 'Piutang Usaha' : 'Utang Usaha'} di Neraca
+              </label>
+              <input type="date" required value={form.due_date} onChange={e => setForm({ ...form, due_date: e.target.value })} className="w-full rounded-xl border border-amber-200 px-3 py-2.5 text-sm" />
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="mb-1 block text-xs font-medium text-ink-400">Keterangan</label>
           <input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Contoh: Pembayaran jasa konsultasi Klien A" className="w-full rounded-xl border border-lavender-200 px-3 py-2.5 text-sm" />

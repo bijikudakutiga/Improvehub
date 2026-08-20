@@ -13,9 +13,10 @@ export function EntityProvider({ children }) {
   const fetchEntities = () => {
     setLoading(true)
     setLoadError('')
-    supabase.from('entities').select('*').order('legal_name').then(({ data, error }) => {
+    const priority = { SPK: 1, FYI: 2, IGL: 3 }
+    supabase.from('entities').select('*').then(({ data, error }) => {
       if (error) setLoadError(error.message)
-      else setEntities(data || [])
+      else setEntities((data || []).sort((a, b) => (priority[a.code] || 99) - (priority[b.code] || 99)))
       setLoading(false)
     })
   }

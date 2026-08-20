@@ -31,11 +31,17 @@ export default function PPN() {
   const kurangBayar = pajakKeluaran - pajakMasukan
 
   const save = async () => {
+    const entryDate = new Date(period.year, period.month, 0).toISOString().slice(0, 10)
     await supabase.from('tax_filings').insert({
       entity_id: entityId, tax_type: 'ppn', period_month: period.month, period_year: period.year,
       taxable_amount: omzet, tax_amount: Math.max(0, kurangBayar)
     })
-    alert('Kewajiban PPN periode ini tersimpan di Ringkasan Pajak.')
+    if (kurangBayar > 0) {
+      await supabase.rpc('fn_record_tax_liability', {
+        p_entity_id: entityId, p_tax_type: 'ppn', p_amount: kurangBayar, p_entry_date: entryDate
+      })
+    }
+    alert('Kewajiban PPN periode ini tersimpan di Ringkasan Pajak dan Laporan Neraca.')
   }
 
   return (

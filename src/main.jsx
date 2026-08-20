@@ -20,3 +20,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 )
+
+// Sembunyikan splash screen setelah aplikasi siap ditampilkan
+const splash = document.getElementById('app-splash')
+if (splash) {
+  setTimeout(() => {
+    splash.classList.add('splash-hide')
+    setTimeout(() => splash.remove(), 500)
+  }, 500)
+}
