@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
-import { SectionEyebrow, ExportBar, ReportLetterhead } from '../../components/ui.jsx'
+import { SectionEyebrow, ReportLetterhead } from '../../components/ui.jsx'
+import { exportLabaRugiExcel } from '../../lib/exportExcel.js'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 
@@ -55,15 +56,21 @@ export default function LabaRugi() {
       <SectionEyebrow>Laporan Laba Rugi — {activeEntity?.legal_name}</SectionEyebrow>
       <ReportLetterhead entity={activeEntity} title="LAPORAN LABA RUGI" />
       {!loading && (
-        <ExportBar
-          filename={`laba-rugi-${activeEntity?.code || 'group'}`}
-          rows={[...rows.pendapatan, ...rows.beban]}
-          columns={[
-            { label: 'Akun', key: 'name' },
-            { label: 'Tipe', key: 'type' },
-            { label: 'Jumlah', value: r => r.balance }
-          ]}
-        />
+        <div className="mb-4 flex gap-2 print:hidden">
+          <button
+            onClick={() => exportLabaRugiExcel({
+              entity: activeEntity, title: 'LAPORAN LABA RUGI',
+              pendapatan: rows.pendapatan, beban: rows.beban,
+              totalPendapatan, totalBeban, labaBersih
+            })}
+            className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50"
+          >
+            ⬇ Unduh Excel (.xlsx)
+          </button>
+          <button onClick={() => window.print()} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
+            🖨 Cetak / Simpan PDF
+          </button>
+        </div>
       )}
       {loading ? <p className="text-sm text-ink-400">Memuat...</p> : (
         <div className="space-y-5">

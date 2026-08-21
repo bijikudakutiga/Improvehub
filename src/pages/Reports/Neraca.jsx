@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useEntity } from '../../contexts/EntityContext.jsx'
 import { SectionEyebrow, ExportBar, ReportLetterhead } from '../../components/ui.jsx'
+import { exportNeracaExcel } from '../../lib/exportExcel.js'
 
 const fmt = n => `Rp ${Number(n || 0).toLocaleString('id-ID')}`
 const MONTHS_LONG = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
@@ -117,26 +118,24 @@ export default function Neraca() {
       </div>
 
       {!loading && (
-        <ExportBar
-          filename={`neraca-${entity?.code || 'group'}-${period.month}-${period.year}`}
-          rows={[
-            { section: 'ASET', ...{} },
-            ...groups.aset.map(r => ({ section: 'Aset', code: r.code, name: r.name, jumlah: Math.abs(r.balance) })),
-            { section: 'Total Aset', jumlah: totalAset },
-            ...groups.kewajiban.map(r => ({ section: 'Kewajiban', code: r.code, name: r.name, jumlah: Math.abs(r.balance) })),
-            ...groups.ekuitas.map(r => ({ section: 'Ekuitas', code: r.code, name: r.name, jumlah: Math.abs(r.balance) })),
-            { section: 'Total Kewajiban + Ekuitas', jumlah: totalKewajiban + totalEkuitas },
-            ...trialBalance.map(r => ({ section: 'Neraca Saldo', code: r.code, name: r.name, debit: r.debit, kredit: r.credit }))
-          ]}
-          columns={[
-            { label: 'Bagian', key: 'section' },
-            { label: 'Kode', key: 'code' },
-            { label: 'Akun', key: 'name' },
-            { label: 'Jumlah', key: 'jumlah' },
-            { label: 'Debit', key: 'debit' },
-            { label: 'Kredit', key: 'kredit' }
-          ]}
-        />
+        <div className="mb-4 flex gap-2 print:hidden">
+          <button
+            onClick={() => exportNeracaExcel({
+              entity: entity || { legal_name: 'IMPROVEHUB', address: 'Jl. Singosari I No.27, Pleburan, Kec. Semarang Sel., Kota Semarang, Jawa Tengah 50241' },
+              title: 'LAPORAN POSISI KEUANGAN (NERACA)',
+              period: `Per ${MONTHS_LONG[period.month - 1]} ${period.year}`,
+              aset: groups.aset, kewajiban: groups.kewajiban, ekuitas: groups.ekuitas,
+              totalAset, totalKE: totalKewajiban + totalEkuitas,
+              trialBalance, totalDebit, totalCredit
+            })}
+            className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50"
+          >
+            ⬇ Unduh Excel (.xlsx)
+          </button>
+          <button onClick={() => window.print()} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
+            🖨 Cetak / Simpan PDF
+          </button>
+        </div>
       )}
 
       {/* Kop Surat — ikut tercetak di PDF */}

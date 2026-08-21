@@ -135,8 +135,8 @@ export default function Tutorial() {
 
   return (
     <>
-      <div className="fixed inset-0 z-[90] bg-ink-900/45" onClick={handleSkip} />
-      <div className="pointer-events-none fixed inset-0 z-[130] flex flex-col items-center justify-end p-4 sm:items-center sm:justify-center">
+      <div className="fixed inset-0 z-[9990] bg-ink-900/45" onClick={handleSkip} />
+      <div className="pointer-events-none fixed inset-0 z-[9995] flex flex-col items-center justify-end p-4 sm:items-center sm:justify-center">
         <div className="animate-fadeIn pointer-events-auto w-full max-w-md">
           <div className="mb-[-24px] flex justify-center">
             <img src="/mascot.png" alt="ImproveBot" className="h-40 w-auto drop-shadow-xl" />

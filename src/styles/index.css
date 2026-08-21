@@ -64,7 +64,7 @@ html, body {
 }
 .quote-marquee {
   width: max-content;
-  animation: quoteScroll 150s linear infinite;
+  animation: quoteScroll 90s linear infinite;
 }
 @keyframes quoteScroll {
   from { transform: translateX(0); }
@@ -77,6 +77,30 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   *:not(.quote-marquee) { animation: none !important; transition: none !important; }
   .quote-marquee { animation-duration: 90s !important; }
+}
+
+/* Animasi halus tambahan — murni CSS, tidak menyentuh logika apa pun */
+
+/* Efek tekan lembut di semua tombol & link */
+button, a {
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, box-shadow 0.2s ease;
+}
+button:active, a:active {
+  transform: scale(0.97);
+}
+
+/* Kartu naik halus saat disentuh/hover */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(37,26,63,0.12);
+}
+
+/* Baris tabel highlight halus saat muncul */
+tbody tr {
+  transition: background-color 0.15s ease;
 }
 
 @media print {

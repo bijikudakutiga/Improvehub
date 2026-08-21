@@ -46,7 +46,7 @@ export default function InstallPrompt() {
   return (
     <div className="animate-fadeIn fixed inset-x-4 bottom-4 z-50 rounded-xl2 border border-lavender-200 bg-white p-4 shadow-lg shadow-ink-900/10 sm:inset-x-auto sm:right-6 sm:w-80">
       <div className="flex items-start gap-3">
-        <img src="/icon-192.png" alt="IMPROVEHUB" className="h-10 w-10 shrink-0 rounded-lg" />
+        <img src="/icon-192-v2.png" alt="IMPROVEHUB" className="h-10 w-10 shrink-0 rounded-lg" />
         <div className="flex-1">
           <p className="font-display text-sm font-semibold text-ink-900">Pasang Aplikasi IMPROVEHUB</p>
           {platform === 'ios' ? (

@@ -17,13 +17,13 @@ export default defineConfig({
         name: 'IMPROVEHUB Finance & Tax',
         short_name: 'IMPROVEHUB',
         description: 'Laporan keuangan & perpajakan IMPROVEHUB Group',
-        theme_color: '#251A3F',
+        theme_color: '#EFEAF9',
         background_color: '#EFEAF9',
         display: 'standalone',
         start_url: '/',
         icons: [
-          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }
+          { src: '/icon-192-v2.png', sizes: '192x192', type: 'image/png' },
+          { src: '/icon-512-v2.png', sizes: '512x512', type: 'image/png' }
         ]
       }
     })

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { exportGenericExcel } from '../lib/exportExcel.js'
 
 // Section divider bergaya "eyebrow label + garis tipis"
 export function SectionEyebrow({ children }) {
@@ -37,7 +38,7 @@ export function KpiCard({ label, value, prefix = 'Rp ', tone = 'default', sub })
     negative: 'bg-blush/40 border-blush'
   }
   return (
-    <div className={`rounded-xl2 border p-5 shadow-sm shadow-ink-900/5 ${tones[tone]}`}>
+    <div className={`card-hover rounded-xl2 border p-5 shadow-sm shadow-ink-900/5 ${tones[tone]}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-ink-400">{label}</p>
       <p className="font-mono mt-2 text-2xl font-semibold text-ink-900"><CountUp value={value} prefix={prefix} /></p>
       {sub && <p className="mt-1 text-xs text-ink-400">{sub}</p>}
@@ -70,7 +71,6 @@ export function ActionCard({ to, title, description, tone, icon }) {
   )
 }
 
-// Tombol unduh CSV (bisa dibuka di Excel) + cetak/simpan PDF
 // Input angka Rupiah yang aman — user bebas ketik dengan/tanpa titik ribuan,
 // tersimpan sebagai angka murni. Menghindari bug input type="number" native
 // yang menolak format "50.000.000" (titik dibaca sebagai desimal oleh browser).
@@ -101,27 +101,12 @@ export function ReportLetterhead({ entity, title, period }) {
   )
 }
 
+// Tombol unduh Excel asli (.xlsx) + cetak/simpan PDF
 export function ExportBar({ filename, rows, columns }) {
-  const downloadCSV = () => {
-    const header = columns.map(c => c.label).join(',')
-    const body = rows.map(r => columns.map(c => {
-      const val = typeof c.value === 'function' ? c.value(r) : r[c.key]
-      return `"${String(val ?? '').replace(/"/g, '""')}"`
-    }).join(',')).join('\n')
-    const csv = '\uFEFF' + header + '\n' + body
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${filename}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
   return (
     <div className="mb-4 flex gap-2 print:hidden">
-      <button onClick={downloadCSV} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
-        ⬇ Unduh Excel (CSV)
+      <button onClick={() => exportGenericExcel(filename, rows, columns)} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
+        ⬇ Unduh Excel (.xlsx)
       </button>
       <button onClick={() => window.print()} className="rounded-xl border border-lavender-200 bg-white px-3.5 py-2 text-xs font-medium text-ink-900 hover:bg-lavender-50">
         🖨 Cetak / Simpan PDF
