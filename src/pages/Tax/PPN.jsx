@@ -63,6 +63,10 @@ export default function PPN() {
         Dihitung otomatis dari total pemasukan (asumsi = penyerahan kena pajak) dan pengeluaran (asumsi = perolehan kena pajak) periode ini —
         sesuaikan jika ada transaksi non-PPN.
       </p>
+      <p className="mb-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-700">
+        ⚠ Modul ini mengasumsikan PT sudah berstatus <strong>PKP (Pengusaha Kena Pajak)</strong>. Kewajiban memungut PPN baru berlaku
+        wajib kalau omzet setahun sudah lebih dari Rp4,8 miliar — kalau di bawah itu dan belum daftar PKP, PT belum wajib memungut PPN sama sekali.
+      </p>
 
       <div className="space-y-3 rounded-xl2 border border-lavender-200 bg-white p-6">
         <div className="flex justify-between text-sm"><span className="text-ink-400">Pajak Keluaran (dari Rp {omzet.toLocaleString('id-ID')})</span><span className="font-mono text-ink-900">{fmt(pajakKeluaran)}</span></div>
