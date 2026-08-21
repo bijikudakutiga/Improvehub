@@ -64,7 +64,7 @@ html, body {
 }
 .quote-marquee {
   width: max-content;
-  animation: quoteScroll 90s linear infinite;
+  animation: quoteScroll 145s linear infinite;
 }
 @keyframes quoteScroll {
   from { transform: translateX(0); }
@@ -76,7 +76,7 @@ html, body {
 
 @media (prefers-reduced-motion: reduce) {
   *:not(.quote-marquee) { animation: none !important; transition: none !important; }
-  .quote-marquee { animation-duration: 90s !important; }
+  .quote-marquee { animation-duration: 145s !important; }
 }
 
 /* Animasi halus tambahan — murni CSS, tidak menyentuh logika apa pun */
